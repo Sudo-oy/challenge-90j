@@ -169,7 +169,7 @@ function useAppStore() {
     setTodos(p => {
       const t = p.find(x=>x.id===id); if (!t) return p
       const patch = {done:!t.done, done_at:!t.done?new Date().toISOString():null}
-      sb.from('todos').update(patch).eq('id',id).catch(()=>{})
+      ;(async()=>{try{await sb.from('todos').update(patch).eq('id',id)}catch(e){}})()
       return p.map(x=>x.id===id?{...x,...patch}:x)
     })
   }, [])
