@@ -571,7 +571,7 @@ function TodosView({ store }) {
 
   async function submit() {
     if (!form.title.trim()) return
-    if (editId) { await editTodo(editId, form); setEditId(null) } else await addTodo(form)
+    if (editId) { await editTodo(editId, {...form, due_date: form.due_date||TODAY}); setEditId(null) } else await addTodo({...form, due_date: form.due_date||TODAY})
     setForm({title:'',priority:'medium',category:'pro',due_date:'',notes:''}); setShowAdv(false)
   }
 
@@ -611,13 +611,13 @@ function TodosView({ store }) {
           </select>
           <Btn primary onClick={submit} disabled={!form.title.trim()}>{editId?'Modifier':'Ajouter'}</Btn>
           {editId&&<Btn onClick={()=>{setEditId(null);setForm({title:'',priority:'medium',category:'pro',due_date:'',notes:''})}}>Annuler</Btn>}
-          <button onClick={()=>setShowAdv(!showAdv)} style={{ background:'transparent', border:'none', color:T.dim, fontSize:11, padding:'4px' }}>{showAdv?'▲':'▼'}</button>
+          <button onClick={()=>setShowAdv(!showAdv)} style={{ background:'transparent', border:'none', color:T.dim, fontSize:11, padding:'4px' }}>{showAdv ? '▲ Moins' : '▼ Options'}</button>
         </div>
         {showAdv && (
-          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:10 }}>
+          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
             <div><div style={{ fontSize:11, color:T.dim, marginBottom:4 }}>CATÉGORIE</div><select value={form.category} onChange={e=>set('category',e.target.value)} style={{ width:'100%', background:T.bg, border:`1px solid ${T.border2}`, borderRadius:6, padding:'8px 10px', color:T.text, fontSize:13 }}>{Object.entries(CATS).map(([v,o])=><option key={v} value={v}>{o.label}</option>)}</select></div>
             <div><div style={{ fontSize:11, color:T.dim, marginBottom:4 }}>ÉCHÉANCE</div><input type="date" value={form.due_date} onChange={e=>set('due_date',e.target.value)} style={{ width:'100%', background:T.bg, border:`1px solid ${T.border2}`, borderRadius:6, padding:'8px 10px', color:T.text, fontSize:13 }}/></div>
-            <div><div style={{ fontSize:11, color:T.dim, marginBottom:4 }}>NOTES</div><input value={form.notes} onChange={e=>set('notes',e.target.value)} placeholder="Contexte…" style={{ width:'100%', background:T.bg, border:`1px solid ${T.border2}`, borderRadius:6, padding:'8px 10px', color:T.text, fontSize:13 }}/></div>
+            <div style={{ gridColumn:'1/-1' }}><div style={{ fontSize:11, color:T.dim, marginBottom:4 }}>NOTES</div><textarea value={form.notes} onChange={e=>set('notes',e.target.value)} placeholder="Contexte, détails…" rows={3} style={{ width:'100%', background:T.bg, border:`1px solid ${T.border2}`, borderRadius:6, padding:'8px 10px', color:T.text, fontSize:13, resize:'vertical', boxSizing:'border-box' }}/></div>
           </div>
         )}
       </Card>
